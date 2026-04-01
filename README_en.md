@@ -62,7 +62,7 @@ Optional:
 1. Upload the code using Arduino IDE in a folder named `NOS_V1.5.0` (files: NOS_V1.5.0.ino and I2C.ino)
 
 2. Configure:
-   - Number of buttons (1 or 2)
+   - Number of buttons (1, 2 or 3)
    - OLED type (128x64 or 128x32)
 
 3. Compiler options are defined inside the source files
