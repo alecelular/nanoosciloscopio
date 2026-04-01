@@ -62,7 +62,7 @@ Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
 
 ## Cómo usar
 1. Cargar el código con el IDE de arduino en una carpeta llamada NOS_V1.5.0 (archivos NOS_V1.5.0.ino e I2C.ino).
-2. Compilar, si se quiere para uno o dos pulsadores, tipo de OLED (128x64 es 8, 128x32 es 4).
+2. Compilar, si se quiere para uno, dos o tres pulsadores, y tipo de OLED (128x64 es 8, 128x32 es 4).
 3. Compilador y opciones están indicadas dentro del NOS_V1.5.0.ino y su complemento I2C.ino.
 4. Se puede usar un ATmega328P para ensayos (ARDUINO, Nano, Pro Mini), pero no he diseñado circuito impreso para ello.
 5. Si se usa cristal, usar la opción de calibración de tensiones de entrada dentro de CONFIG.
