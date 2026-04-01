@@ -4,7 +4,7 @@ Simple digital oscilloscope based on ATtiny85 with OLED display.
 
 👉 English version README_en.md
 
-👉 Spanish version below
+👉 Versión en castellano, a continuación
 
 ---
 
