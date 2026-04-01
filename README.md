@@ -1,14 +1,17 @@
 # Nano Oscilloscope with ATtiny85
 
 Simple digital oscilloscope based on ATtiny85 with OLED display.
+
 👉 English version README_en.md
+
 👉 Spanish version below
 
 ---
 
 # Nanoosciloscopio con ATtiny85
 
-Osciloscopio digital simple...# Nanoosciloscopio con ATtiny85
+Osciloscopio digital simple...
+
 ![Prototipo](Fotos/prototipo.jpg)
 
 Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
