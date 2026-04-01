@@ -86,3 +86,7 @@ nanoosciloscopio@gmail.com
 
 Se agradece informar mejoras o errores.
 
+## Apoyar el proyecto
+
+Si te resultó útil, podés invitarme un café:
+https://cafecito.app/rsp148
