@@ -65,5 +65,5 @@ Uso no comercial.
 Si querés usarlo comercialmente, contactame:
 nanoosciloscopio@gmail.com
 
-Se agradece reportar mejoras o errores.
+Se agradece informar mejoras o errores.
 
