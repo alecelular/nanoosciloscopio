@@ -1,5 +1,5 @@
 # Nanoosciloscopio con ATtiny85
-![Prototipo](fotos/prototipo.jpg)
+![Prototipo](Fotos/prototipo.jpg)
 
 Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
 
