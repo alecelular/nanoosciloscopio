@@ -4,17 +4,18 @@
 Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
 
 ## Características
-- Muestreo rápido por ADC
-- Visualización en pantalla
-- Generador de señal integrado
+- Muestreo rápido por ADC.
+- Visualización en pantalla.
+- Generador de señal integrado.
 - Escala de tiempo: 10 µs a 8160 µs por punto.
+- Mide señales de amplitud de 1V, 3,3V, 5V o 12V, según selección.
+- Solo para señales de valores positivos.
 
 ## Hardware necesario
-- ATtiny85 (principal), adaptable a ATmega328P
-- OLED SSD1306
+- ATtiny85 (principal), adaptable a ATmega328P.
+- OLED SSD1306.
 
 ### Componentes
-
 - R1 10 kΩ
 - R2 10 kΩ
 - R3 10 kΩ
@@ -39,9 +40,8 @@ Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
 - Interruptor.
 - Circuito impreso
 - Módulo de carga tipo TP4056
-- Batería
-- Cristal. (Preferente de 8 MHz funciona con batería de litio,
-           y a 16 MHz alimentada a 5 V, pero dan precisión)
+- Batería de litio o similar, de 3,7 V
+- Cristal. Da la precisión del equipo. (El de 8 MHz funciona con batería de litio, y el de 16 MHz solo con 5 V, aunque a veces funciona con una batería de litio bien cargada)
 
 ## Conexiones
 (ver hardware/Esquematico_Nano-Osciloscopio_2026-04-01.png)
