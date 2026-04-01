@@ -99,3 +99,9 @@ For commercial use, contact:
 nanoosciloscopio@gmail.com
 
 Feedback and improvements are welcome.
+
+## Support the project
+
+If you find this project useful, you can support it here:
+
+[![Buy me a coffee](https://cdn.cafecito.app/img/buttons/button_1.svg)](https://cafecito.app/rsp148)
