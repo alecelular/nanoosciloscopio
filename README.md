@@ -9,8 +9,9 @@ Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
 - Generador de señal integrado.
 - Escala de tiempo: 10 µs a 8160 µs por punto.
 - Mide señales de amplitud de 1V, 3,3V, 5V o 12V, según selección.
+- Puede mostrar señales desde 1 Hz, hasta aproximadamente 10 kHz
 - Solo para señales de valores positivos.
-
+- Versión inicial para publicación. Faltan detalles que iré agregando.
 ## Hardware necesario
 - ATtiny85 (principal), adaptable a ATmega328P.
 - OLED SSD1306.
