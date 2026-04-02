@@ -28,14 +28,14 @@ Configuración:
 
 Caso particular:
 
-* Se puede usar `OLED 7 (128x56)` si hay líneas dañadas o si se quiere reservar espacio para más información
+* Se puede usar `OLED 7 (128x56)` si hay líneas dañadas al final, o si se quiere reservar espacio para más información
 
 ### Información en pantalla
 
 Se muestra en este orden:
 
 1. Magnificación: `x1`, `x2`, `x3`
-2. Escala de entrada: `1`, `3`, `5`, `C` (1V, 3.3V, 5V, 12V)
+2. Escala de entrada: `1`, `3`, `5`, `C` (1V, 3,3V, 5V, 12V)
 3. Modo: `A` (auto) o `M` (manual)
 4. Zoom: `4` (activo) o `N`
 5. Trigger: `G` (gatillo) o `L` (libre)
@@ -47,7 +47,7 @@ Se muestra en este orden:
 
 ## Pantalla e I2C (bitbang)
 
-No se usan bibliotecas estándar porque ocupaban pines necesarios.
+No se usan bibliotecas estándar porque ocupaban E/S necesarias.
 
 Configuración:
 
@@ -99,7 +99,7 @@ Opciones de implementación:
 
 ### Sin cristal
 
-Se pueden usar pines libres (no recomendado por precisión).
+Se pueden usar E/S libres (no recomendado por precisión).
 
 ### Usando RESET como entrada analógica
 
@@ -166,8 +166,8 @@ Compatible con:
 
 Características:
 
-* Pines adaptados automáticamente
-* Pulsadores 2 y 3 con entradas propias
+* E/S adaptadas automáticamente
+* Pulsadores 2 y 3 con E/S propias
 * Navegación de menú más rápida
 
 Aun así, la idea principal es usar **ATtiny85**.
@@ -229,7 +229,7 @@ Incluye:
 
 ## Alimentación
 
-Se utiliza un módulo basado en TP4056 (4 o 6 pines).
+Se utiliza un módulo basado en TP4056 (4 o 6 terminales).
 
 Notas:
 
