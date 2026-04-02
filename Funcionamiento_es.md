@@ -223,7 +223,7 @@ Detalles:
 Incluye:
 
 * Distribución de componentes
-* Imágenes del montaje
+* Imágenes del montaje en Fotos
 
 ---
 
@@ -243,7 +243,7 @@ Notas:
 ### 16 MHz
 
 * Requiere mayor tensión
-* Puede funcionar si la batería está completamente cargada
+* Podría funcionar si la batería está completamente cargada
 
 ---
 
