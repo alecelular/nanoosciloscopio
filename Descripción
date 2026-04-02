@@ -1,6 +1,8 @@
-Principio de funcionamiento
+## Principio de funcionamiento
 
-Sección osciloscopio
+- (In Spanish, use a translator for other languages. If in doubt, the Spanish text is the correct version.)
+
+## Sección osciloscopio
 
 Se hace una muestra de la señal de entrada por cada interrupción del temporizador 1. Se crean escalas de tiempo que van desde 1 (10 µs) hasta 816 (8160 µs) que marca el ritmo de la muestra y son representadas a lo largo de los 128 puntos de ancho de la pantalla. En cuanto a la entrada analógica, se usa para estabilidad la referencia interna de 1,1 V. Un divisor resistivo acomodará las tensiones de entrada para que no supere, por seguridad, un voltio. La pantalla usará 56 puntos de altura para graficar, los 8 puntos restantes, para informar la frecuencia, valor pico, entre otras cosas. Eso es así para una pantalla de 128 x 64. Para una pantalla de 128 x 32, la onda se representará con menos puntos. El tipo de pantalla se define en #define OLED 8 para 128 x 64 y de 4 para 128 x 32. En mi caso fue útil el valor 7 (128 x 56) porque tenía una pantalla que se le rompió una de las puntas y las últimas 8 líneas de pantalla no funcionaban y así puede usarlo. También es útil si se quiere forzar a menos "pantalla" para incorporar otra linea informativa más abajo. En cuanto a la información, pondrá primero un número entre 1 y 3 que será una magnificación de la onda cuando la tensión es baja (x1, x2 x3) luego otro caracter que será 1,3,5,C que representa la selección de tensión de entrada (1 V, 3,3V, 5 V y 12 V), luego 'A' para autoescala o 'M' para escala manual, sigue un 4 si se quiere escalar la onda por 4 para ver detalles o una 'N' si no se usa esa opción, sigue una 'G' si es con gatillo o 'L' si es libre, después los microsegundos por punto, la frecuencia de la señal, y el valor máximo alcanzado de tensión.
 
@@ -23,19 +25,19 @@ Si quieren usar un ATmega328P en cualquiera de sus variedades, (Nano, pro mini, 
 
 Hay un extra, que si se usa 16 MHz, la escala 1 pasará a ser de 5 µs y no de 10 µs, duplicando la resolución mínima. Las siguientes escalas de tiempo, serán lo esperado.
 
-Sección generador
+#Sección generador
 
 Se puede generar una onda cuadrada de la frecuencia que se pida entre 1 y más de 20 kHz, usando la entrada, ahora como salida. Usa el temporizador 1 de otra manera y genera la frecuencia más aproximada a la pedida. Si se pide 100 Hz, seguramente dará 100 Hz y se pondrá el símbolo "=", pero 101 Hz no será exacto, se pondrá lo obtenido y el símbolo "#". No es simultaneo con el modo osciloscopio. En el caso del ATmega328P la salida estará separada de la entrada.
 
-Conexionado
+#Conexionado
 
 El esquema está en la sección hardware, donde está el pdf del esquema para ATtiny85 y también la lista de componentes. Para ATmega328P servirá de referencia, pero no hice plano alguno. Lo dejo en criterio del que lea esto. En el .ino está el detalle de las patas usadas al caso. También está la placa parta ATtiny85 diseñada para un pulsador y para tres pulsadores, en sendos jpg. es una placa de aproximadamente 5 x 5 cm donde caben para armar dos equipos. También un esquema básico de distribución de los componentes, pero se ve perfectamente en las fotos del armado. En cuanto al regulador/cargador de la batería puede usarse cualquiera de los modelos de mercado del TP4056, de 4 y 6 contactos. La placa de tres pulsadores está diseñada para cualquiera de los dos, con la salvedad de agregar un puente más en la placa, por diferencia de diseño de éstas. Debe usarse batería cuando la frecuencia es de 8 MHz del cristal (o la interna de 8 MHz si no usa cristal) Para 16 MHz (cristal o 16 MHz PLL) debe usarse una tensión mayor, lo que hace que no pueda usarse el TP4056, pero según la tolerancia del procesador, he observado que si la batería está bien cargada, puede usarse el de 16 MHz. Por debajo de la placa, soldé un conector para poder reprogramar al ATtiny85 si quiero actualizarlo, sin necesidad de poner un zócalo de 8 patas y sacarlo y ponerlo, pudiendolo soldar (si se pone el TP4056 sería tedioso un zócalo para ATtiny85 porque no se podría sacar). El detalle de como usar un "Arduino as ISP" para programarlo, también está en el .ino.
 
-Otros detallles
+#Otros detallles
 
 En el código hay más datos de funcionamiento y otros #define que imagino serán claros para el análisis de funcionamiento y obtener más provecho del equipo. La idea del nanoosciloscopio era hacer uno con una cantidad mínima de componentes y creo que lo he logrado. La batería de 250 mA me ha servido para tenerlo en funcionamiento durante más de 12 hs, con la practicidad de cargarla en el mismo equipo.
 
-Gracias
+#Gracias
 
 Espero que lo disfruten. Yo lo hice haciéndolo y ahora publicándolo, después de dos meses de trabajo de código y diseño. Puede haber errores, optimizaciones, etc, y sería bueno que lo indiquen para mejorarlo.
 
