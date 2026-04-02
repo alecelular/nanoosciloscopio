@@ -1,4 +1,4 @@
-# Nano Oscilloscope with ATtiny85
+# Nanooscilloscope with ATtiny85
 ![Prototipo](Fotos/prototipo.jpg)
 
 Simple digital oscilloscope based on ATtiny85 with OLED display.
