@@ -167,7 +167,7 @@ Compatible con:
 Características:
 
 * Pines adaptados automáticamente
-* Pulsadores 2 y 3 con interrupciones
+* Pulsadores 2 y 3 con entradas propias
 * Navegación de menú más rápida
 
 Aun así, la idea principal es usar **ATtiny85**.
