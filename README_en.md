@@ -54,8 +54,7 @@ Optional:
 
 ## Connections
 (see hardware/Esquematico_Nano-Osciloscopio_2026-04-01.png)
-## Conexiones y funcionamiento
-see ![Esquema](hardware/Esquematico_Nano-Osciloscopio_2026-04-01.png) and ![Details](Funcionamiento_es)
+see ![PDF](hardware/Esquematico_Nano-Osciloscopio_2026-04-01.png) and ![Details](Funcionamiento_es)
 
 ---
 
