@@ -57,8 +57,8 @@ Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
 - Batería de litio o similar, de 3,7 V
 - Cristal. Da la precisión del equipo. (El de 8 MHz funciona con batería de litio, y el de 16 MHz solo con 5 V, aunque a veces funciona con una batería de litio bien cargada)
 
-## Conexiones
-(ver hardware/Esquematico_Nano-Osciloscopio_2026-04-01.png)
+## Conexiones y funcionamiento
+ver ![Prototipo](hardware/Esquematico_Nano-Osciloscopio_2026-04-01.png) y ![Prototipo](Funcionamiento_es)
 
 ## Cómo usar
 1. Cargar el código con el IDE de arduino en una carpeta llamada NOS_V1.5.0 (archivos NOS_V1.5.0.ino e I2C.ino).
@@ -71,8 +71,8 @@ Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
 8. Ajustar parámetros,
 
 ## Limitaciones
-- Ancho de banda limitado,
-- Resolución ADC,
+- Ancho de banda limitado
+- Resolución ADC
 
 ## Autor
 Alejandro F. Fernández  
