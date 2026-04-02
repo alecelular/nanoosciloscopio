@@ -271,6 +271,9 @@ Autonomía:
 
 * Batería de 250 mAh → más de 12 horas de uso
 
+Recomendación:
+
+* La versión de un pulsador es igual de funcional que la de tres, pero ocupa menos código
 ---
 
 ## Gracias
