@@ -20,93 +20,114 @@
  - Uso intensivo de interrupciones
 */
 
-// Nano Osciloscopio. Para usar con ATTINY85 o con Arduino,
-// Arduino Nano o Arduino Pro Mini
+// Nano Osciloscopio. Para usar con ATtiny85 o con ATmega328P
+// Las explicaciones son mayormente para ATtiny85 para que
+// siga siendo un osciloscopio muy nano.
 
-#define VERSION  "V1.5.0"   // Hasta 9 de largo
-#define FECHA    "01/04/26"
+#define VERSION  "V1.6.0"   // Hasta 9 de largo
+#define FECHA    "16/04/26"
 #define NOMBRE   "NOS"
 #define AUTOR    "alecelular"
 
 // Cantidad de pulsadores. Si se compila con cristal, los
-// pulsadores 2 y 3 están en la pata de reset, si no en PB3/4
+// pulsadores 2 y 3 están en la pata de reset, si no en ports
 #define PULSADORES 3
 
-// Modelo de pantalla:
-// OLED 128x64 = 8
-// OLED 128x56 = 7
-// OLED 128x48 = 6
-// OLED 128x40 = 5
-// OLED 128x32 = 4
+// Líneas en la pantalla a visibilizar, por si se quiere
+// agregar más información debajo. (7 agrega una, 6 agrega 2),
+// visto en caracteres simples, no dobles.
+// En el caso de OLED<=4, usará una pantalla de 128x32
+// Más de 4, usará una pantalla de 128x64
+// Usar normalmente 8 para 128x64 y 4 para 128x32
 #define OLED 8
 
-//| -------------------------------------|
-//| En ATTINY85                          |
-//|--------------------|------|----------|
-//| Función            | Pata |   Señal  |
-//|--------------------|------|----------|
-//| RESET / PulRes 2/3 |   1  | Reset    |
-//| Cristal A / PulD 3 |   2  | PB3/ADC3 |entrada reloj externo
-//| Cristal B / PulD 2 |   3  | PB4/ADC2 |
-//| MASA               |   4  |   0 V    |
-//| SDA                |   5  | PB0/AIN0 |
-//| SCL                |   6  | PB1/AIN1 |
-//| Ent/SAL            |   7  | PB2/ADC1 |
-//| Alimentación       |   8  |   VCC    |
-//|--------------------| -----|----------|
+//| ---------------------------------------|
+//| En ATtiny85                            |
+//|--------------------|------|------------|
+//| Función            | Pata |   Señal    |
+//|--------------------|------|------------|
+//| RESET / PulRes 2/3 |   1  | Reset      |
+//| Cristal A / PulD 3 |   2  | PB3/ADC3/XX|
+//| Cristal B / PulD 2 |   3  | PB4/ADC2   |
+//| MASA               |   4  |   0 V      |
+//| SDA' (BitBang)     |   5  | PB0/AIN0   |
+//| SCL' (BitBang)     |   6  | PB1/AIN1   |
+//| SAL/ENT/Frec       |   7  |PB2/ADC1/T0 |
+//| Alimentación       |   8  |   VCC      |
+//|--------------------| -----|------------|
 // ATtiny85 a 16 MHz PLL interno o cristal externo de 16 MHz, y
 // por lo tanto, la escala 1 será de 5 µs. Y a 8 MHz la escala
 // 1 será de 10 µs. OLED SSD1306 128x64 I2C (No el SSH1106)
-// Compilar usando ATTinyCore 1.4.1 / 1.5.2 sin millis()
+// Compilar usando ATtinyCore 1.4.1 / 1.5.2 sin millis()
 // En preferencias: http://drazzy.com/package_drazzy.com_index.json
+//|----------------------------------------|
+//| En ATtiny84 (Bosquejo, pero no usado)  |
+//|--------------------|------|------------|
+//| Función            | Pata |   Señal    |
+//|--------------------|------|------------|
+//| Alimentación       |   1  | VCC        |
+//| Cristal A          |   2  | PB0        |
+//| Cristal B          |   3  | PB1        |
+//| RESET              |   4  | PB3 Reset  |
+//| SALIDA GEN         |   5  | PB2        |
+//| PUL 1              |   6  | PA7        |
+//| SDA                |   7  | PA6 MOSI   |
+//| PUL 2              |   8  | PA5 MISO   |
+//| SCL                |   9  | PA4 SCK    |
+//| ENT FREC           |  10  | PA3 T0     |
+//| PUL 3              |  11  | PA2        |
+//| ENT ANALOGICA      |  12  | PA1 ADC1   |
+//| AREF               |  13  | PA0 AREF   |
+//| MASA               |  14  | 0 V        |
+//|--------------------| -----|------------|
 //| ---------------------------------- |
-//| En Arduino Nano o Arduino Pro Mini |
+//| En ATmega328P (ensayado)           |
 //|---------------|---------|----------|
 //| Función       |  Pata   |  Señal   |
 //|---------------|---------|----------|
-//| ADC entrada   |   A0    | PC0      |
-//| Generador     |   D8    | PB0      |
-//| Pulsador      |   D2    | PD2/INT0 |
-//| SDA (bitbang) |   A4    | PC4      |
-//| SCL (bitbang) |   A5    | PC5      |
+//| ADC entrada   |  A0     | PC0      |
+//| Generador     |  D8     | PB0      |
+//| Frecuencímetro|  D5/T1  | PD5      |
+//| SDA'(bitbang) |  D11    | PB3      |
+//| SCL'(bitbang) |  D10    | PB2      |
+//| PD2  PUL1 -   | D2/INT0 | PD2      |
+//| PD3  PUL2 CEN | D3/INT1 | PD3      |
+//| PD4  PUL3 +   |D4/XCK/T0| PD4      |
 //|---------------|---------|----------|
-//| Extras en pro mini                 |
+//| Extras no usadas aquí              |
 //|---------------|---------|----------|
 //| DTR           | Reset   |  Reset   |
 //| RXI           | D0/RXD  |  PD0     |
 //| TXO           | D1/TXD  |  PD1     |
 //|---------------|---------|----------|
-//| PD2  PUL1 -   | D2/INT0 |  PD2     | Menos
-//| PD3  PUL2 CEN | D3/INT1 |  PD3     | Central
-//| PD4  PUL3 +   |D4/XCK/T0|  PD4     | Más
-//| PD5           |  D5/T1  |  PD5     |
-//| PD6           | D6/AIN0 |  PD6     |
-//| PD7           | D7/AIN1 |  PD7     |
-//| PB0           | D8/ICP  |  PB0 0   |
-//| PB1           | D9/OC1A |  PB1 1   |
-//| PB2           | SS/OC1B |  PB2 2   |
-//| PB3           |MOSI/OC2 |  PB3 3   |
-//| PB4           |  MISO   |  PB4 4   |
-//| PB5  LED      | PB5/SCK |  PB5 5   |
+//| PD6           | D6/AIN0 | PD6      |
+//| PD7           | D7/AIN1 | PD7      |
+//| PB0           | D8/ICP  | PB0 0    |
+//| PB1           | D9/OC1A | PB1 1    |
+//| PB2           | SS/OC1B | PB2 2/D10|
+//| PB3           |MOSI/OC2 | PB3 3/D11|
+//| PB4           |  MISO   | PB4 4    |
+//| PB5  LED      | PB5/SCK | PB5 5    |
 //| PB6           | PB6(XTAL1/TOSC1)   |
 //| PB7           | PB7(XTAL2/TOSC2)   |
 //| PC0/PC3       |  A0/A3  |  ADC0/3  |
-//| PC4/PC5       |4/5/SDA/L|  ADC4/5  |
+//| SDA           |   A4    | PC4/ADC4 |
+//| SCL           |   A5    | PC5/ADC5 |
 //| PC6           | RESET   |  PC6     |
 //| ADC6/7        |  A6/7   |  ADC6/7  |
 //|---------------|---------|----------|
 
 // Para programar con Arduino as ISP:
-//|-----------|-------------|-------------|
-//| Señal ISP |  ATtiny85   |  ATmega328P |
-//|-----------|-------------|-------------|
-//| MOSI      | pin 5 (PB0) | D11  (PB3)  |
-//| MISO      | pin 6 (PB1) | D12  (PB4)  |
-//| SCK       | pin 7 (PB2) | D13  (PB5)  |
-//| RESET     | pin 1 (RES) | RST         |
-//| VCC       | pin 8 (VCC) | VCC         |
-//| GND       | pin 4 ( 0V) | GND         |
-//|-----------|-------------|-------------|
+//|-----------|-------------|-------------|-------------|
+//| Señal ISP |  ATtiny85   |  ATtiny84   |  ATmega328P |
+//|-----------|-------------|-------------|-------------|
+//| RESET     | pin 1 (RES) | Pin 4 (RST) | RST         |
+//| VCC       | pin 8 (VCC) | Pin 1 (VCC) | VCC         |
+//| SCK       | pin 7 (PB2) | Pin 9 (PA4) | D13  (PB5)  |
+//| MISO      | pin 6 (PB1) | Pin 8 (PA5) | D12  (PB4)  |
+//| MOSI      | pin 5 (PB0) | Pin 7 (PA6) | D11  (PB3)  |
+//| GND       | pin 4 ( 0V) | Pin 14 (0V) | GND         |
+//|-----------|-------------|-------------|-------------|
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -115,14 +136,6 @@
 // Pantalla:
 #define ALTURA_MAX (OLED*8-9)
 #define PAGINA_ESTADO OLED-1
-
-#ifndef PULSADORES
-#define PULSADORES 1
-#endif
-#if PULSADORES<1
-#undef PULSADORES
-#define PULSADORES 1
-#endif
 
 // CLOCK_SOURCE==0      // RC
 // CLOCK_SOURCE==1      // Cristal externo
@@ -155,6 +168,40 @@
 #define TIPOF " 16MHz"
 #else
 #define TIPOF "  8MHz"
+#endif
+
+// Normalizo la cantidad de pulsadores, y si es sin cristal,
+// solo puede haber uno dos pulsadores.
+#ifndef PULSADORES
+#define PULSADORES 1
+#endif
+#if PULSADORES<1
+#undef PULSADORES
+#define PULSADORES 1
+#endif
+
+// Macros de Compatibilidad
+#if defined(__AVR_ATtiny85__)
+ #define START_CONTR() TCCR0B=(1<<CS02) | (1<<CS01) | (1<<CS00) // PB2
+ #define STOP_CONTR()  TCCR0B=0
+ #define CLEAR_FLAGS() TIFR=(1<<TOV0) | (1<<OCF1A)
+ #define ENABLE_INTS() TIMSK|=(1<<TOIE0) | (1<<OCIE1A)
+ #define LECTURA_HW    TCNT0
+ #define DESPLAZAMIENTO 8  // Temporizador 0 es de 8 bits
+#else
+ // ATMega328P:
+ // Uso T1 para contar (pata D5) y T2 para base de tiempo
+ #define START_CONTR() TCCR1B=(1<<CS12) | (1<<CS11) | (1<<CS10) // D5
+ #define STOP_CONTR()  TCCR1B=0
+ #define CLEAR_FLAGS() TIFR1=(1<<TOV1); TIFR2=(1<<OCF2A)
+ #define ENABLE_INTS() TIMSK1|=(1<<TOIE1); TIMSK2|=(1<<OCIE2A)
+ #define LECTURA_HW    TCNT1
+ #define DESPLAZAMIENTO 16 // Temporizador 1 es de 16 bits
+#endif
+#if F_CPU == 16000000L
+ #define VALOR_OCR 249
+#else
+ #define VALOR_OCR 124 
 #endif
 
 #define ADC_SAT_ALTO 254
@@ -197,6 +244,7 @@ unsigned int EEMEM ee_band;
 
 const char ModoOsc[]   PROGMEM = "Oscilosco-\npio";
 const char ModoGen[]   PROGMEM = "Generador";
+const char ModoFre[]   PROGMEM = "Frecuencia";
 const char ModoCfg[]   PROGMEM = "Config";
 const char Volver[]    PROGMEM = "<Volver>";
 
@@ -219,29 +267,33 @@ const char Ent1[]      PROGMEM = "Ent 1V";
 const char Ent12[]     PROGMEM = "Ent 12V";
 const char Escalar[]   PROGMEM = "Escalar";
 
-const char Frec1[]     PROGMEM = "Frec +1";
-const char Frec10[]    PROGMEM = "Frec +10";
-const char Frec100[]   PROGMEM = "Frec +100";
-const char Frec1000[]  PROGMEM = "Frec +1000";
-const char Frec1M[]    PROGMEM = "Frec -1";
-const char Frec10M[]   PROGMEM = "Frec -10";
-const char Frec100M[]  PROGMEM = "Frec -100";
-const char Frec1000M[] PROGMEM = "Frec -1000";
-const char FrecEn50[]  PROGMEM = "Frec\nen 50 Hz";
-const char FrecEn100[] PROGMEM = "Frec\nen 100 Hz";
-const char FrecEn500[] PROGMEM = "Frec\nen 500 Hz";
-const char FrecEn1000[]PROGMEM = "Frec\nen 1 kHz";
-const char FrecEn10K[] PROGMEM = "Frec\nen 10 kHz";
+const char Gen1[]      PROGMEM = "Gen +1";
+const char Gen10[]     PROGMEM = "Gen +10";
+const char Gen100[]    PROGMEM = "Gen +100";
+const char Gen1000[]   PROGMEM = "Gen +1000";
+const char Gen1M[]     PROGMEM = "Gen -1";
+const char Gen10M[]    PROGMEM = "Gen -10";
+const char Gen100M[]   PROGMEM = "Gen -100";
+const char Gen1000M[]  PROGMEM = "Gen -1000";
+const char GenEn50[]   PROGMEM = "Gen\nen 50 Hz";
+const char GenEn100[]  PROGMEM = "Gen\nen 100 Hz";
+const char GenEn500[]  PROGMEM = "Gen\nen 500 Hz";
+const char GenEn1000[] PROGMEM = "Gen\nen 1 kHz";
+const char GenEn10K[]  PROGMEM = "Gen\nen 10 kHz";
 
-const char Calibra0[]  PROGMEM = "CALIBRAR\n0V";
-const char Calibra1[]  PROGMEM = "CALIBRAR\n1V";
-const char Calibra3[]  PROGMEM = "CALIBRAR\n3,3V";
-const char Calibra5[]  PROGMEM = "CALIBRAR\n5V";
-const char Calibra12[] PROGMEM = "CALIBRAR\n12V";
+const char Frec100MS[] PROGMEM = "Frec 0,1s";
+const char Frec1S[]    PROGMEM = "Frec 1s";
+
 const char Girar[]     PROGMEM = "Girar";
-const char Cal50Hz[]   PROGMEM = "CALIBRAR\nCON 50 Hz";
-const char Cal60Hz[]   PROGMEM = "CALIBRAR\nCON 60 Hz";
 const char Acerca[]    PROGMEM = "Acerca de";
+
+const char Calibra0[]  PROGMEM = "CAL 0V";
+const char Calibra1[]  PROGMEM = "CAL 1V";
+const char Calibra3[]  PROGMEM = "CAL 3,3V";
+const char Calibra5[]  PROGMEM = "CAL 5V";
+const char Calibra12[] PROGMEM = "CAL 12V";
+const char Cal50Hz[]   PROGMEM = "CAL 50 Hz";
+const char Cal60Hz[]   PROGMEM = "CAL 60 Hz";
 
 #if PULSADORES==1
 #pragma message "Versión de un pulsador"
@@ -265,6 +317,7 @@ enum Menu_Osciloscopio
  MENU_OSC_SEL_CAL5,
  MENU_OSC_SEL_CALC,
  MENU_OSC_GENERADOR,
+ MENU_OSC_FREC,
  MENU_OSC_CONF,
  MENU_OSC_PUL1_VOLVER
 };
@@ -273,7 +326,7 @@ const char* const menuOsc[] PROGMEM =
 {
  AutoEsc, EscUno, Escuno, EscDiez, Escdiez, EscCien, Esccien,
  EscMax, EscMin, Escalar, LibreAuto, Grilla, LinPun,
- Ent1, Ent3, Ent5, Ent12, ModoGen, ModoCfg, Volver
+ Ent1, Ent3, Ent5, Ent12, ModoGen, ModoFre, ModoCfg, Volver
 };
 
 enum Menu_Generador
@@ -292,16 +345,17 @@ enum Menu_Generador
  MENU_GEN_FRECEN1000,
  MENU_GEN_FRECEN10000,
  MENU_GEN_OSCILOSCOPIO,
+ MENU_GEN_FREC,
  MENU_GEN_CONF,
  MENU_GEN_PUL1_VOLVER
 };
 
 const char* const menuGen[] PROGMEM =
 {
- Frec1,Frec1M,Frec10,Frec10M,Frec100,
- Frec100M,Frec1000,Frec1000M,
- FrecEn50,FrecEn100,FrecEn500,FrecEn1000,
- FrecEn10K, ModoOsc, ModoCfg,Volver
+ Gen1, Gen1M, Gen10, Gen10M, Gen100,
+ Gen100M, Gen1000, Gen1000M,
+ GenEn50, GenEn100, GenEn500, GenEn1000, GenEn10K,
+ ModoOsc, ModoFre, ModoCfg,Volver
 };
 
 enum Menu_Conf
@@ -318,6 +372,7 @@ enum Menu_Conf
  MENU_CFG_GIRO,
  MENU_CFG_OSCILOSCOPIO,
  MENU_CFG_GENERADOR,
+ MENU_CFG_FREC,
  MENU_CFG_ACERCADE,
  MENU_CFG_PUL1_VOLVER
 };
@@ -328,9 +383,23 @@ const char* const menuCfg[] PROGMEM =
  #ifdef SIN_CRISTAL
  Cal50Hz, Cal60Hz,
  #endif
- Girar, ModoOsc, ModoGen, Acerca, Volver
+ Girar, ModoOsc, ModoGen, ModoFre, Acerca, Volver
 };
 
+enum Menu_Frec
+{
+ MENU_FRE_1S=1,
+ MENU_FRE_100MS,
+ MENU_FRE_OSCILOSCOPIO,
+ MENU_FRE_GENERADOR,
+ MENU_FRE_CONF,
+ MENU_FRE_PUL1_VOLVER
+};
+
+const char* const menuFre[] PROGMEM =
+{
+ Frec1S, Frec100MS, ModoOsc, ModoGen, ModoCfg, Volver
+};
 #endif    // Fin PULSADOR 1
 
 
@@ -362,6 +431,7 @@ enum Menu_Osciloscopio
  MENU_OSC_LINEAS,
  MENU_OSC_SEL_CAL1,     // Selecciona calibracion guardada
  MENU_OSC_SEL_CALC,
+ MENU_OSC_FREC,
  MENU_OSC_CONF,
  MENU_OSC_PUL2_VOLVER,
 };
@@ -371,7 +441,7 @@ const char* const menuOsc[] PROGMEM =
  AutoEsc, EscUno, EscDiez, EscCien, EscMax, Escalar, Grilla,
  Ent3, Ent5, ModoGen, Volver,
  LibreAuto, Escuno, Escdiez, Esccien, EscMin, LinPun,
- Ent1, Ent12, ModoCfg, Volver
+ Ent1, Ent12, ModoFre, ModoCfg, Volver
 };
 
 enum Menu_Generador
@@ -392,16 +462,18 @@ enum Menu_Generador
  MENU_GEN_FRECEN500,
  MENU_GEN_FRECEN1000,
  MENU_GEN_FRECEN10000,
+ MENU_GEN_FREC,
  MENU_GEN_CONF,
  MENU_GEN_PUL2_VOLVER,
 };
 
 const char* const menuGen[] PROGMEM =
 {
- Frec1,Frec10,Frec100,Frec1000,
- FrecEn50,FrecEn100,ModoOsc, Volver,
- Frec1M,Frec10M,Frec100M,Frec1000M,
- FrecEn500,FrecEn1000, FrecEn10K, ModoCfg,Volver
+ Gen1, Gen10, Gen100, Gen1000,
+ GenEn50, GenEn100, ModoOsc, Volver,
+ Gen1M, Gen10M, Gen100M, Gen1000M,
+ GenEn500, GenEn1000, GenEn10K,
+ ModoFre, ModoCfg,Volver
 };
 
 enum Menu_Conf
@@ -413,6 +485,7 @@ enum Menu_Conf
  #endif
  MENU_CFG_GIRO,
  MENU_CFG_OSCILOSCOPIO,
+ MENU_CFG_GENERADOR,
  MENU_CFG_PUL1_VOLVER,
 
  MENU_CFG_CAL_0,
@@ -421,7 +494,7 @@ enum Menu_Conf
  #ifdef SIN_CRISTAL
  MENU_CFG_FREC60,
  #endif
- MENU_CFG_GENERADOR,
+ MENU_CFG_FREC,
  MENU_CFG_ACERCADE,
  MENU_CFG_PUL2_VOLVER,
 };
@@ -437,7 +510,24 @@ const char* const menuCfg[] PROGMEM =
  #ifdef SIN_CRISTAL
  Cal60Hz,
  #endif
- ModoGen, Acerca, Volver
+ ModoGen, ModoFre, Acerca, Volver
+};
+
+enum Menu_Frec
+{
+ MENU_FRE_1S=1,
+ MENU_FRE_100MS,
+ MENU_FRE_PUL1_VOLVER,
+
+ MENU_FRE_OSCILOSCOPIO,
+ MENU_FRE_GENERADOR,
+ MENU_FRE_CONF,
+ MENU_FRE_PUL2_VOLVER
+};
+
+const char* const menuFre[] PROGMEM =
+{
+ Frec1S, Frec100MS, Volver, ModoOsc, ModoGen, ModoCfg, Volver
 };
 
 #endif      // Fin PULSADOR 2
@@ -474,6 +564,7 @@ enum Menu_Osciloscopio
  MENU_OSC_SEL_CAL5,
  MENU_OSC_SEL_CALC,
  MENU_OSC_GENERADOR,
+ MENU_OSC_FREC,
  MENU_OSC_CONF,
  MENU_OSC_PUL3_VOLVER
 };
@@ -483,7 +574,7 @@ const char* const menuOsc[] PROGMEM =
  EscUno, EscDiez, EscCien, EscMax, Volver,
  Escuno, Escdiez, Esccien, EscMin, Volver,
  AutoEsc, Escalar, LibreAuto, LinPun, Grilla,
- Ent1, Ent3, Ent5, Ent12, ModoGen, ModoCfg, Volver
+ Ent1, Ent3, Ent5, Ent12, ModoGen, ModoFre, ModoCfg, Volver
 };
 
 enum Menu_Generador
@@ -512,19 +603,18 @@ enum Menu_Generador
  // Pulsador selección, 3
 
  MENU_GEN_OSCILOSCOPIO,
+ MENU_GEN_FREC,
  MENU_GEN_CONF,
  MENU_GEN_PUL3_VOLVER,
 };
 
 const char* const menuGen[] PROGMEM =
 {
- Frec1,Frec10, Frec100, Frec1000,
- FrecEn50, FrecEn100,
- FrecEn10K,
- Volver,
- Frec1M, Frec10M, Frec100M, Frec1000M,
- FrecEn500, FrecEn1000, Volver,
- ModoOsc, ModoCfg, Volver
+ Gen1, Gen10, Gen100, Gen1000,
+ GenEn50, GenEn100, GenEn10K, Volver,
+ Gen1M, Gen10M, Gen100M, Gen1000M,
+ GenEn500, GenEn1000, Volver,
+ ModoOsc, ModoFre, ModoCfg, Volver
 };
 
 enum Menu_Conf
@@ -553,6 +643,7 @@ enum Menu_Conf
 
  MENU_CFG_OSCILOSCOPIO,
  MENU_CFG_GENERADOR,
+ MENU_CFG_FREC,
  MENU_CFG_ACERCADE,
  MENU_CFG_PUL3_VOLVER,
 };
@@ -568,11 +659,43 @@ const char* const menuCfg[] PROGMEM =
  #ifdef SIN_CRISTAL
  Cal60Hz,
  #endif
- Volver, ModoOsc,  ModoGen, Acerca, Volver
+ Volver, ModoOsc,  ModoGen, ModoFre, Acerca, Volver
+};
+
+enum Menu_Frec
+{
+ // Pulsador Más, 1
+
+ MENU_FRE_1S=1,
+ MENU_FRE_PUL1_VOLVER,
+
+ // Pulsador Menos,  2
+
+ MENU_FRE_100MS,
+ MENU_FRE_PUL2_VOLVER,
+
+ // Pulsador selección, 3
+
+ MENU_FRE_OSCILOSCOPIO,
+ MENU_FRE_GENERADOR,
+ MENU_FRE_CONF,
+ MENU_FRE_PUL3_VOLVER
+};
+
+const char* const menuFre[] PROGMEM =
+{
+ Frec1S, Volver, Frec100MS, Volver,
+ ModoOsc, ModoGen, ModoCfg, Volver
 };
 
 #endif      // Fin PULSADOR 3
 
+// Para frecuencímetro
+volatile unsigned int excesos_contador=0;
+volatile byte cuenta_base_tiempo=0;
+volatile byte limite_cuentas=250;
+
+// Para Osciloscopio
 volatile byte capturas[CAPTURAS_TOTAL];
 volatile byte indice=0;
 int escala;  // Puede tomar valores negativos momentáneos
@@ -593,7 +716,7 @@ byte rangoActual=RANGO_CAL5;
 #define BAND_AUTOESCALA    (1<<3)
 #define BAND_GIRO          (1<<4)
 #define BAND_ESCALAR       (1<<5)
-unsigned int band=(BAND_MODOGATILLO | BAND_AUTOESCALA);
+unsigned int band=0;
 
 // Para leer el pulsador
 volatile bool pido=false;
@@ -607,6 +730,7 @@ byte adc_offset=ADC_SAT_BAJO;         // ADC para 0V
 #define MODO_OSCILOSCOPIO 0     // Debe ser 0
 #define MODO_GENERADOR    1
 #define MODO_CFG          2
+#define MODO_FREC         3
 
 volatile byte modoActual=MODO_OSCILOSCOPIO;
 
@@ -614,6 +738,12 @@ volatile byte modoActual=MODO_OSCILOSCOPIO;
 volatile unsigned int contadorFrecuencia=0;
 volatile unsigned int recargaFrecuencia=100;  // Divisor
 signed int genFrec=100;        // 100 Hz
+
+void adira(void)
+{
+ ADCSRA|=(1<<ADSC);
+ while(ADCSRA & (1<<ADSC));
+}
 
 // Habilita interrupciones del temporizador 1 y las generales.
 void habilitarT1(void)
@@ -629,13 +759,11 @@ void habilitarT1(void)
  // en modo osciloscopio
  if(modoActual==MODO_OSCILOSCOPIO)
  {
-  ADCSRA|=(1<<ADSC);
-  while(ADCSRA & (1<<ADSC));
+  adira();
   (void)ADCH;
 
   // Primer captura
-  ADCSRA|=(1<<ADSC);
-  while(ADCSRA & (1<<ADSC));
+  adira();
   capturas[0]=ADCH;
   indice=1;
  }
@@ -663,13 +791,13 @@ bool finCaptura(void)
 
  #else
 
- // Pin D2 en ATmega328P es pulsador 1. Está siempre
+ // Pata D2 en ATmega328P es pulsador 1. Está siempre
  aborta=!(PIND & (1<<PD2))
  #if PULSADORES>1
- | !(PIND & (1<<PD3)) // PD4  Pulsador 2
+ | !(PIND & (1<<PD3)) // PD3  Pulsador 2
  #endif
  #if PULSADORES>2
- | !(PIND & (1<<PD4)) // PD3 PUL 3
+ | !(PIND & (1<<PD5)) // PD5 PUL 3
  #endif
  ;
  if(aborta) TIMSK1&=~(1<<OCIE1A); // Registro específico del Nano
@@ -773,7 +901,7 @@ void configurarEscala(unsigned int m)
   tiempoDeseado=5;
  }
  #else
- // Para los arduinos, un poco más lento
+ // Para los ATmega328P, un poco más lento
  if(m==1)
  {
   // En 16 MHz, 5 es el borde mínimo, 6 es seguro
@@ -791,7 +919,7 @@ void configurarEscala(unsigned int m)
   tiempoDeseado=10;
  }
  #else
- // Para los arduinos, un poco más lento
+ // Para los ATmega328P, un poco más lento
  if(m==1)
  {
   // En 8 MHz, 9 borde mínimo, 10 seguro, 12 estable
@@ -805,27 +933,26 @@ void configurarEscala(unsigned int m)
  if(modoActual==MODO_OSCILOSCOPIO)
  {
   // Lógica para ATtiny85 (8MHz o 16MHz PLL)
-  // Sirve para Arduino Nano o Pro Mini
+  // Sirve para ATmega328P
   byte presc;
   #if F_CPU==8000000UL
-  if(m==1) presc=(1<<ADPS1);                   // /4
-  else if(m==2) presc=(1<<ADPS1)|(1<<ADPS0);   // /8
-  else if(m==3) presc=(1<<ADPS2);              // /16
-  else if(m==4) presc=(1<<ADPS2)|(1<<ADPS0);   // /32
-  else presc=(1<<ADPS2)|(1<<ADPS1);            // /64
+  if(m==1) presc=(1<<ADPS1);                   // /4  Crítico
+  else if(m==2) presc=(1<<ADPS1)|(1<<ADPS0);   // /8  Límite
+  else if(m==3) presc=(1<<ADPS2);              // /16 Bueno
+  else presc=(1<<ADPS2)|(1<<ADPS0);            // /32 Óptimo
   #else
-  if(m==1) presc=(1<<ADPS1)|(1<<ADPS0);        // /8
-  else if(m==2) presc=(1<<ADPS2);              // /16
-  else if(m==3) presc=(1<<ADPS2)|(1<<ADPS0);   // /32
-  else if(m==4) presc=(1<<ADPS2)|(1<<ADPS1);   // /64
-  else presc=(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0); // /128
+  if(m==1) presc=(1<<ADPS1)|(1<<ADPS0);        // /8  Crítico
+  else if(m==2) presc=(1<<ADPS2);              // /16 Límite
+  else if(m==3) presc=(1<<ADPS2)|(1<<ADPS0);   // /32 Bueno
+  presc=(1<<ADPS2)|(1<<ADPS1);                 // /64 Óptimo
   #endif
 
   while(ADCSRA & (1<<ADSC));
   ADCSRA&=~((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0));
   ADCSRA|=presc;
-  ADCSRA|=(1<<ADSC); // Conversión de limpieza
-  while(ADCSRA & (1<<ADSC));
+
+  // Conversión de limpieza
+  adira();
   (void)ADCH;
  }
 
@@ -915,7 +1042,7 @@ void configurarEscala(unsigned int m)
 
  #else
 
- // Para los arduinos
+ // Para los ATmega328P
  TCCR1A=0;
  TCCR1B=(1<<WGM12); // Modo CTC
  TCNT1=0;
@@ -971,6 +1098,20 @@ ISR(TIMER1_COMPA_vect)
   return;
  }
 
+ // Modo frecuencímetro
+ if(modoActual==MODO_FREC)
+ {
+  #if defined(__AVR_ATtiny85__)
+  if(++cuenta_base_tiempo>=limite_cuentas)
+  {
+   STOP_CONTR();      // Termina la lectura
+  }
+  #else
+  excesos_contador++;   // Cambia la función en ATmega328P
+  #endif
+  return;
+ }
+
  // MODO GENERADOR
  pido=false;
  if(--contadorFrecuencia==0)
@@ -978,10 +1119,104 @@ ISR(TIMER1_COMPA_vect)
   #if defined(__AVR_ATtiny85__)
   PINB=(1<<PB2); 
   #else
-  PINB=(1<<PB0); // D8 en arduino es Port B bit 0
+  PINB=(1<<PB0); // D8 en ATmega328P es Port B bit 0
   #endif
   contadorFrecuencia=recargaFrecuencia;
  }
+}
+
+// ISR Base de Tiempo en ATmega328P: Detiene el cronómetro
+#if !defined(__AVR_ATtiny85__)
+
+ISR(TIMER2_COMPA_vect)
+{
+ if(++cuenta_base_tiempo>=limite_cuentas)
+ {
+  STOP_CONTR();      // Termina la lectura
+ }
+}
+
+#endif
+
+// ISR Contador: Acumula los desbordamientos del Timer 0
+#if defined(__AVR_ATtiny85__)
+ISR(TIMER0_OVF_vect)
+{
+ excesos_contador++;    // Cuento en 16 bits + 8 bits = 16777215
+}
+#endif
+
+unsigned long int medirFrecuencia(void)
+{
+ // Respaldo
+ byte guarda_sreg = SREG;
+ cli();
+
+ #if defined(__AVR_ATtiny85__)
+ byte guarda_T0A=TCCR0A, guarda_T0B=TCCR0B, guarda_TCNT0=TCNT0;
+ byte guarda_T1=TCCR1, guarda_MSK=TIMSK;
+ #else
+ // En ATmega328P:
+ // Timer 1 (Contador) y Timer 2 (Base de tiempo)
+ byte guarda_T1A=TCCR1A, guarda_T1B=TCCR1B;
+ uint16_t guarda_TCNT1=TCNT1;
+ byte guarda_T2A=TCCR2A, guarda_T2B=TCCR2B, guarda_MSK1=TIMSK1, guarda_MSK2=TIMSK2;
+ #endif
+
+ // Preparación
+ excesos_contador=0;
+ cuenta_base_tiempo=0;
+
+ // Configuración del Contador
+ #if defined(__AVR_ATtiny85__)
+ TCCR0A=0;
+ TCNT0=0;
+ TCCR1=(1<<CTC1) | (1<<CS13) | (1<<CS10);
+ OCR1C = VALOR_OCR;
+ #else
+ TCCR1A=0;
+ TCCR1B=0;
+ TCNT1=0;
+ TCCR2A=(1<<WGM21);
+ TCCR2B=(1<<CS22) | (1<<CS21);
+ OCR2A=VALOR_OCR;
+ #endif
+
+ CLEAR_FLAGS();
+ ENABLE_INTS();
+    
+ sei();
+ START_CONTR(); 
+
+ // Espero a que termine
+ #if defined(__AVR_ATtiny85__)
+ while(TCCR0B!=0);
+ #else
+ while(TCCR1B!=0);
+ #endif
+
+ unsigned long int conteo_final=((unsigned long int)excesos_contador<<DESPLAZAMIENTO)+LECTURA_HW;
+
+ // Restauro
+ cli();
+ #if defined(__AVR_ATtiny85__)
+ TCCR0A=guarda_T0A;
+ TCCR0B=guarda_T0B;
+ TCNT0=guarda_TCNT0;
+ TCCR1=guarda_T1;
+ TIMSK=guarda_MSK;
+ #else
+ TCCR1A=guarda_T1A;
+ TCCR1B=guarda_T1B;
+ TCNT1=guarda_TCNT1;
+ TCCR2A=guarda_T2A;
+ TCCR2B=guarda_T2B;
+ TIMSK1=guarda_MSK1;
+ TIMSK2=guarda_MSK2;
+ #endif
+    
+ SREG=guarda_sreg;
+ return limite_cuentas==250?conteo_final:(conteo_final*10);
 }
 
 // Captura según la escala elegida y analiza los datos. Devuel-
@@ -1006,8 +1241,11 @@ unsigned long int analiza(unsigned int cap, byte &p1)
  // Así leo el pulsador y poder abortar la lectura
  DDRB&=~((1<<PB0) | (1<<PB1));
  PORTB&=~((1<<PB0) | (1<<PB1));
+
  // Habilito comparador para detectar el pulsador
  ACSR&=~(1<<ACD);
+ delay(4);     // Doy tiempo para estabilizar el comparador
+ 
  #endif
 
  habilitarT1();         // Lanzo la captura
@@ -1248,7 +1486,7 @@ void actualizar(int comienzo, unsigned long int hz_x10, unsigned int ms)
  pantalla_print((band&BAND_AUTOESCALA)?'A':'M');
 
  // Si está escalada o normal
- if(band&BAND_ESCALAR) pantalla_print('4'); else pantalla_print('N');
+ pantalla_print((band&BAND_ESCALAR)?'4':'N');
 
  pantalla_separacion(3);
 
@@ -1297,6 +1535,7 @@ void actualizar(int comienzo, unsigned long int hz_x10, unsigned int ms)
 // se mantiene. 255 es presión breve del pulsador 1
 // 254 si es pulso breve del pulsador 2, 253 del pulsador 3.
 // Si es 0 es falso, no hubo pulsación de cualquier tipo
+// Se necesitan 10 ms para estabilizar el comparador.
 byte leerPulsador(void)
 {
  // Pido leer pulsadores cuando haya atendido una interrupción
@@ -1316,6 +1555,10 @@ byte leerPulsador(void)
  }
 
  byte resultado=0;
+
+ // Si no se pone cristal, se ponen los pulsadores 2 y 3
+ // donde estaba el cristal
+
  #if defined(__AVR_ATtiny85__) && !defined(SIN_CRISTAL) && PULSADORES!=1
  // Leo un pulsador en reset. Y funciona. Hasta 3 pulsadores.
  // Son leídos cuando termina de medir o cuando es frecuencia.
@@ -1326,24 +1569,22 @@ byte leerPulsador(void)
  ADMUX=(0<<REFS1)|(0<<REFS0)|(1<<ADLAR); // VCC ref y Justificación Izquierda (8 bits)
 
  // Inicio una conversión de descarte. El micro necesita purgar
- // la carga de la referencia anterior (1.1V)
- ADCSRA|=(1<<ADSC);
- while(ADCSRA & (1<<ADSC)); // Esperar a que termine
+ // la carga de la referencia anterior (2,56 V)
+ adira();
+ (void)ADCH;
 
  // Inicio la conversión real
- ADCSRA|=(1<<ADSC);
- while(ADCSRA & (1<<ADSC));
+ adira();
 
  // Leo solo el registro alto para obtener 8 bits rápidos
- resultado=ADCH;
+ byte res=ADCH;
 
  // Doy una segunda lectura, por la inestabilidad de la
  // pulsación analógica.
- ADCSRA|=(1<<ADSC);
- while(ADCSRA & (1<<ADSC));
+ adira();
 
  // Leo solo el registro alto para obtener 8 bits rápidos
- byte resultado2=ADCH;
+ byte res2=ADCH;
 
  // Restauro la referencia a 1.1V
  // (REFS1=1, REFS0=0 para ATtiny85)
@@ -1351,9 +1592,8 @@ byte leerPulsador(void)
 
  // Pulsador 2 y 3. En todos los casos, se continúa con el 1
  // Los dos a la vez, provoca reset
- if(resultado<130 && resultado2<130)      resultado=2;
- else if(resultado<200 && resultado2<200) resultado=3;
- else resultado=0;
+ if(res<130 && res2<130)      resultado=2;
+ else if(res<200 && res2<200) resultado=3;
  #endif
 
  // Si son pulsadores directos cuando no hay cristal
@@ -1373,7 +1613,7 @@ byte leerPulsador(void)
   if(!(PIND & (1<<PD3))) resultado=2;
   #endif
   #if PULSADORES>2
-  if(!(PIND & (1<<PD4))) resultado=3;
+  if(!(PIND & (1<<PD5))) resultado=3;
   #endif
  #endif
 
@@ -1382,7 +1622,7 @@ byte leerPulsador(void)
  // Con este y el pulsador 2, da pulsaador 5
  // Y junto con el pulsador 3 da el pulsador 4
  // Si se gira, los pulsadores 1 y 3 se intercambian
- // De paso da tiempo a estabilizar la referencia de 1,1V
+ // De paso da tiempo a estabilizar la referencia de 2,56 V
  // Guardo estado del PORT B para no molestar al bus i2C
  // ya que lo uso para leer el pulsador
  #if defined(__AVR_ATtiny85__)
@@ -1395,7 +1635,10 @@ byte leerPulsador(void)
 
  ACSR&=~(1<<ACD);         // Habilito comparador
 
- // Busco pulsación
+ // Busco pulsación estable del comparador
+ delay(4);                // Estabilizo
+
+ // Leo
  bool pul=!(ACSR & (1<<ACO));
 
  #else
@@ -1407,12 +1650,14 @@ byte leerPulsador(void)
  // Busco un pulso breve, sólo si hubo un pulso inicial
  if(pul
  #if PULSADORES>1
- || resultado!=0        // Pulsode los otros
+ || resultado!=0        // Pulso de los otros
  #endif
  ) delay(PRESION_PULSADOR_BREVE);
 
  #if defined(__AVR_ATtiny85__)
- bool pulb=!(ACSR & (1<<ACO));   // Lo leo igual
+
+ // Lo leo para ver si se soltó
+ bool pulb=!(ACSR & (1<<ACO));
 
  // Devuelvo estado del port
  DDRB=ddr;
@@ -1437,7 +1682,7 @@ byte leerPulsador(void)
   bool pulb2=!(PIND & (1<<PD3));   // Pulsador 2
   #endif
   #if PULSADORES>2
-  bool pulb3=!(PIND & (1<<PD4));   // Pulsador 3
+  bool pulb3=!(PIND & (1<<PD5));   // Pulsador 3
   #endif
  #endif
 
@@ -1496,7 +1741,7 @@ byte menu(void)
  byte cual=leerPulsador();
 
  // Las pulsaciones breves no hacen menú
- // Tampoco si es 0 o 4 o 5
+ // Tampoco si es 0 o 4 o mas
  if(cual==0 || cual>=4) return cual;
 
  // Sigue presionado. Hago menú.
@@ -1510,6 +1755,7 @@ byte menu(void)
  #if PULSADORES>1
  bool modOsc=false;
  bool modGen=false;
+ bool modCfg=false;
  #endif
  // Selección de tabla
  // (Mantengo esto simple para el compilador)
@@ -1529,10 +1775,18 @@ byte menu(void)
   modGen=true;
   #endif
  }
- else
+ else if(modoActual==MODO_CFG)
  {
   ptrMenu=menuCfg;
   fin=(byte)MENU_CFG_PUL1_VOLVER;
+  #if PULSADORES>1
+  modCfg=true;
+  #endif
+ }
+ else
+ {
+  ptrMenu=menuFre;
+  fin=(byte)MENU_FRE_PUL1_VOLVER;
  }
 
  // Ajuste de ventana según pulsador (Solo si hay más de uno)
@@ -1542,14 +1796,15 @@ byte menu(void)
  {
   // El inicio del bloque 2 es el fin del bloque 1
   inicio=fin;
-  fin=(modOsc)?(byte)MENU_OSC_PUL2_VOLVER:(modGen)?(byte)MENU_GEN_PUL2_VOLVER:(byte)MENU_CFG_PUL2_VOLVER;
+  fin=(modOsc)?(byte)MENU_OSC_PUL2_VOLVER:(modGen)?(byte)MENU_GEN_PUL2_VOLVER:(modCfg?(byte)MENU_CFG_PUL2_VOLVER:MENU_FRE_PUL2_VOLVER);
+
   #if PULSADORES>2
   // Excepción a cual!=pMas
   if(cual==2)
   {
    // Bloque 3
    inicio=fin;
-   fin=(modOsc)?(byte)MENU_OSC_PUL3_VOLVER:(modGen)?(byte)MENU_GEN_PUL3_VOLVER:(byte)MENU_CFG_PUL3_VOLVER;
+   fin=(modOsc)?(byte)MENU_OSC_PUL3_VOLVER:(modGen)?(byte)MENU_GEN_PUL3_VOLVER:(modCfg?(byte)MENU_CFG_PUL3_VOLVER:(byte)MENU_FRE_PUL3_VOLVER);
   }
   #endif
  }
@@ -1641,7 +1896,7 @@ void activarGenerador(unsigned int fDeseada_Hz)
  cli();
 
  // Preparo Pata 7 (PB2) como salida.
- // En arduino, PB0 ya es salida
+ // En ATmega328P, PB0 ya es salida
  #if defined(__AVR_ATtiny85__)
  DDRB|=(1<<PB2);
  #endif
@@ -1658,7 +1913,7 @@ void activarGenerador(unsigned int fDeseada_Hz)
  pantalla_println(F(",0 Hz"));
 
  // Obtenida (en mili Hz)
- pantalla_print(F("Obtenida "));
+ pantalla_print(F("Real "));
  pantalla_println(res.perfecta?"=":"#");
  printDecimal(res.frecuencia_mHz/100,5);
  ihz();
@@ -1674,7 +1929,7 @@ void restaurarOsc(void)
 {
  cli();
  modoActual=MODO_OSCILOSCOPIO;
- // Para ATTINY85. En arduino la pata de salida
+ // Para ATtiny85. En ATmega328P la pata de salida
  // siempre es salida
  #if defined(__AVR_ATtiny85__)
  DDRB&=~(1<<PB2);          // PB2 vuelve a ser entrada
@@ -1694,6 +1949,7 @@ void limpiaX2(void)
  pantalla_modoTipo(2);
  #endif
  pantalla_separacion(1);
+ pantalla_cursor(0,0);
 }
 
 void limpia(void)
@@ -1748,23 +2004,30 @@ void icali(void)
 {
  pantalla_print(F("CALIBRADO"));
 }
-//7286
-void calibrarRangoGenerico(byte rangoActivo, byte vref_mV)
+
+// Verdadero si aborta
+bool veoAborta(void)
 {
- if(pulsar()>250)
+ if(pulsar()>250)   // >250 es código de pulsos cortos
  {
   limpiaX2();
   pantalla_print(F("Aborta!"));
-  return;
+  return true;
  }
  limpiaX2();
+ return false;
+}
+
+void calibrarRangoGenerico(byte rangoActivo, byte vref_mV)
+{
+ if(veoAborta()) return;
+
  unsigned int suma=0;
 
  // Promediar 64 muestras
  for(byte i=0;i<64;i++)
  {
-  ADCSRA|=(1<<ADSC);
-  while(ADCSRA & (1<<ADSC));
+  adira();
   suma+=ADCH;
  }
 
@@ -1859,15 +2122,8 @@ void calibrarFrecuencia(unsigned int frecRef_x10)
  pantalla_println(F("CAL:"));
  pantalla_print(frecRef_x10/10);
  ihz();
- if(pulsar()>250)
- {
-  limpiaX2();
-  pantalla_print(F("Aborta"));
-  return;
- }
 
- // Borro todo
- limpiaX2();
+ if(veoAborta()) return;
 
  byte minimo_error=255;
  byte maximo_error=0;
@@ -1952,12 +2208,21 @@ void modoCFG(void)
  pantalla_print(F("CONFIGURAR"));
 }
 
+void modoFRE(void)
+{
+ restaurarOsc();       // Pone como entrada a PB2
+ modoActual=MODO_FREC;
+ limpiaX2();
+ pantalla_print(F("Frecuencia\nModo "));
+ if(limite_cuentas==250) pantalla_println(F("1 s")); else pantalla_println(F("100ms"));
+}
+
 // SETUP
 
 void setup(void)
 {
  #if !defined(__AVR_ATtiny85__)
- // CONFIGURACIÓN ARDUINO NANO / PRO MINI
+ // Configuarción ATmega328P
  // Para que no queden flotantes, pongo a todas en INPUT_PULLUP
  // y luego excluyo las que necesito. Y de paso favorece a los
  // pulsadores.
@@ -1977,9 +2242,13 @@ void setup(void)
  #if defined(__AVR_ATtiny85__)
 
  // CONFIGURACIÓN ADC (PB1 / ADC1)
- ADMUX=0xA1;   // REFS1, ADLAR, MUX0 (Referencia 1.1V, Ajuste Izq, Canal ADC1)
+ // Referencia de 2,56 V
+ // (Es como poner ADMUX=0xB1 pero lo detallo)
+ ADMUX=(1<<REFS2)|(1<<REFS1)|(0<<REFS0)|(1<<ADLAR)|(1<<MUX0);
+ 
  delay(20); 
- ADCSRA=0xC3;  // ADEN, ADSC y Prescaler /8 (Lanza la conversión de limpieza de una vez)
+ // Lanza la conversión de limpieza de una vez
+ ADCSRA=0xC3;  // ADEN, ADSC y Prescaler /8
  while(ADCSRA & (1<<ADSC)); // Espera a que termine
 
  // Veo si se compila sin cristal, para agregar dos pulsadores
@@ -1994,6 +2263,8 @@ void setup(void)
  #endif
 
  #else
+
+ // Caso ATmega328P
 
  // Configuro ADC para máxima velocidad inicial
  // Mantiene 1.1V y canal ADC0
@@ -2021,12 +2292,11 @@ void setup(void)
 
  // Realizar una conversión de "limpieza" para asentar
  // la referencia
- ADCSRA|=(1<<ADSC);
- while(ADCSRA & (1<<ADSC));
+ adira();
 
  // Si es la primera vez, a es 0
  unsigned int id=eeprom_read_word(&ee_id);
- band=(id!=EEPROM_ID?band:(eeprom_read_word(&ee_band)));
+ band=(id!=EEPROM_ID?(BAND_MODOGATILLO | BAND_AUTOESCALA):(eeprom_read_word(&ee_band)));
 
  pantalla_comienzo();
  pantalla_rotar((band&BAND_GIRO)?0:1); // 1 o 0 para rotar 180 grados
@@ -2061,12 +2331,14 @@ void setup(void)
   eeprom_update_word(&ee_id, EEPROM_ID);
   eeprom_update_byte(&ee_adc_fs_0,0);     // Cal 0V
   eeprom_update_byte(&ee_adc_fs_1,230);   // Para 1V
-  eeprom_update_byte(&ee_adc_fs_3,140);   // Para 3,3V
-  eeprom_update_byte(&ee_adc_fs_5,226);   // Para 5V
+  eeprom_update_byte(&ee_adc_fs_3,147);   // Para 3,3V
+  eeprom_update_byte(&ee_adc_fs_5,222);   // Para 5V
   eeprom_update_byte(&ee_adc_fs_C,240);   // Para 12V
-  eeprom_update_byte(&ee_osccal,OSCCAL);  // Valor inicial
   eeprom_update_byte(&ee_rangoActual,33); // Actual 3,3 V
   eeprom_update_word(&ee_band,band);
+  #ifdef SIN_CRISTAL
+  eeprom_update_byte(&ee_osccal,OSCCAL);  // Valor inicial
+  #endif
  }
 
  // Traigo valores guardados
@@ -2074,12 +2346,10 @@ void setup(void)
  cargarFactorPorRango();
  adc_offset=eeprom_read_byte(&ee_adc_fs_0);
 
- // Traigo calibración de frecuencia
+ // Traigo calibración de frecuencia, cuando no se  usa cristal
+ #ifdef SIN_CRISTAL
  OSCCAL=eeprom_read_byte(&ee_osccal);
-
- // Para pruebas directas y entrar en modo generador
- //modoActual=MODO_GENERADOR;
- //activarGenerador(genFrec);  // Sigue en la que estaba
+ #endif
 }
 
 //  LOOP
@@ -2137,8 +2407,7 @@ void loop(void)
     // La pantalla ahora es "negro sobre blanco"
     pantalla_invertir(true);
 
-    // Espero a soltar y presionar el pulsador
-    while(leerPulsador());
+    // Espero a presionar el pulsador
     while(!leerPulsador());
 
     // Vuelve a "blanco sobre negro"
@@ -2174,14 +2443,10 @@ void loop(void)
   byte accion=menu();
   switch(accion)
   {
-   case 253:
-    break;
-   case 254:
-    break;
    case 255:            // Pulso breve
     capan=true;
     limpiaX2();
-    pantalla_print(F("Capturando"));
+    pantalla_print(F("Captura"));
     delay(PRESION_PULSADOR);
     break;
    case MENU_OSC_AUTOESCALA:
@@ -2264,9 +2529,14 @@ void loop(void)
    case MENU_OSC_GENERADOR:
     activarGenerador(genFrec);  // Sigue en la que estaba
     break;
+   case MENU_OSC_FREC:
+    modoFRE();                  // Sigue en la que estaba
+    break;
    case MENU_OSC_CONF:
     modoCFG();
-    return;               // Va a loop()
+    return;                     // Va a loop()
+   default:
+    break;
   }
   if(escala<ESCALA_MINIMA) escala=ESCALA_MINIMA;
   if(escala>ESCALA_MAXIMA) escala=ESCALA_MAXIMA;
@@ -2278,12 +2548,6 @@ void loop(void)
   byte accion=menu();
   switch(accion)
   {
-   case 253:
-    break;
-   case 254:
-    break;
-   case 255:
-    break;
    case MENU_GEN_FREC1:
     ++genFrec;
     break;
@@ -2329,6 +2593,9 @@ void loop(void)
    case MENU_GEN_PUL1_VOLVER:
     activarGenerador(genFrec);  // Sigue en la que estaba
     break;
+   case MENU_GEN_FREC:
+    modoFRE();                  // Sigue en la que estaba
+    break;
    #if PULSADORES>1
    case MENU_GEN_PUL2_VOLVER:
     activarGenerador(genFrec);  // Sigue en la que estaba
@@ -2342,23 +2609,19 @@ void loop(void)
    case MENU_GEN_CONF:
     modoCFG();
     break;
+   default:
+    break;
   }
   if(genFrec<1) genFrec=1;
   if(genFrec>32000) genFrec=32000;
   if(g!=genFrec) activarGenerador(genFrec);
  }
- else
+ else if(modoActual==MODO_CFG)
  {
   // Modo configurador
   byte accion=menu();
   switch(accion)
   {
-   case 253:
-    break;
-   case 254:
-    break;
-   case 255:
-    break;
    case MENU_CFG_CAL_0:
     calibrarRangoGenerico(RANGO_CAL0,0);
     delay(3000);
@@ -2404,6 +2667,9 @@ void loop(void)
    case MENU_CFG_GENERADOR:
     activarGenerador(genFrec);  // Sigue en la que estaba
     break;
+   case MENU_CFG_FREC:
+    modoFRE();                  // Sigue en la que estaba
+    break;
    case MENU_CFG_GIRO:
     band^=BAND_GIRO;
     pantalla_rotar((band&BAND_GIRO)?0:1);
@@ -2420,6 +2686,49 @@ void loop(void)
    case MENU_CFG_PUL3_VOLVER:
    #endif
     modoCFG();
+    break;
+   default:
+    break;
+  }
+ }
+ else
+ {
+  // Entra y sale cada un segundo o cada 100 ms,
+  // luego ve las acciones
+  pantalla_cursor(0,4);
+  printEnteros(medirFrecuencia(),7);
+  ihz();
+  // Modo frecuencímetro
+  byte accion=menu();
+  switch(accion)
+  {
+   case MENU_FRE_100MS:
+    limite_cuentas=25; 
+    modoFRE();
+    break;    
+   case MENU_FRE_1S:
+    limite_cuentas=250; 
+    modoFRE();
+    break;
+   case MENU_FRE_OSCILOSCOPIO:
+    restaurarOsc();
+    break;
+   case MENU_FRE_GENERADOR:
+    activarGenerador(genFrec);  // Sigue en la que estaba
+    break;
+   case MENU_FRE_CONF:
+    modoCFG();
+    break;
+   #if PULSADORES>1
+   case MENU_FRE_PUL2_VOLVER:
+   #endif
+   #if PULSADORES>2
+   case MENU_FRE_PUL3_VOLVER:
+   #endif
+   case MENU_FRE_PUL1_VOLVER:
+    modoFRE();
+    break;
+   default:
     break;
   }
  }
