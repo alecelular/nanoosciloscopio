@@ -30,7 +30,7 @@ Simple digital oscilloscope based on ATtiny85 with OLED display.
 - R6 10 kΩ
 - R7 12 kΩ
 - R8 47 kΩ
-- R9 0 Ω (jumper)
+- R9 0 Ω (The resistor has been replaced by a jumper wire)
 - R10 6.8 kΩ (Button 2, only for 3-button version)
 - R11 22 kΩ  (Button 3, only for 3-button version)
 - C1 15 pF
