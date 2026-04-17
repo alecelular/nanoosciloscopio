@@ -5,10 +5,10 @@
 // R3 10 kΩ
 // R4 100 kΩ
 // R5 47 kΩ   (PUL1)
-// R6 4,7 kΩ
+// R6 10 kΩ
 // R7 12 kΩ
 // R8 47 kΩ
-// R9 8,2 k
+// R9 0 (puente)
 // R10 6,8 kΩ (PUL 2) Solo para placa de 3 pulsadores
 // R11 22 kΩ  (Pul 3) Solo para placa de 3 pulsadores
 // C1 15 pF
