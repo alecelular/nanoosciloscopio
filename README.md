@@ -38,7 +38,7 @@ Osciloscopio digital simple basado en ATtiny85 con visualización en OLED.
 - R6 10 kΩ
 - R7 12 kΩ
 - R8 47 kΩ
-- R9 0 (puente)
+- R9 0 Ω (Se reemplazó por un puente, o bien se unen sus pistas con estaño)
 - R10 6,8 kΩ (PUL 2) Solo para placa de 3 pulsadores
 - R11 22 kΩ  (Pul 3) Solo para placa de 3 pulsadores
 - C1 15 pF
