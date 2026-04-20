@@ -25,7 +25,7 @@
 // siga siendo un osciloscopio muy nano.
 
 #define VERSION  "V1.6.0"   // Hasta 9 de largo
-#define FECHA    "16/04/26"
+#define FECHA    "20/04/26"
 #define NOMBRE   "NOS"
 #define AUTOR    "alecelular"
 
@@ -2090,6 +2090,7 @@ void calibrarRangoGenerico(byte rangoActivo, byte vref_mV)
    //  Guardo y establezco
    rangoActual=rangoActivo;
    eeprom_update_byte(&ee_rangoActual,rangoActual);
+   adc_fondo_escala=adc_cal;
 
    // Pongo lo evaluado
    pantalla_println(adc_cal);
@@ -2330,10 +2331,17 @@ void setup(void)
   band=(BAND_MODOGATILLO | BAND_AUTOESCALA);
   eeprom_update_word(&ee_id, EEPROM_ID);
   eeprom_update_byte(&ee_adc_fs_0,0);     // Cal 0V
-  eeprom_update_byte(&ee_adc_fs_1,230);   // Para 1V
+  #if defined(__AVR_ATtiny85__)
+  eeprom_update_byte(&ee_adc_fs_1,100);   // Para 1V
   eeprom_update_byte(&ee_adc_fs_3,147);   // Para 3,3V
-  eeprom_update_byte(&ee_adc_fs_5,222);   // Para 5V
+  eeprom_update_byte(&ee_adc_fs_5,193);   // Para 5V
   eeprom_update_byte(&ee_adc_fs_C,240);   // Para 12V
+  #else
+  eeprom_update_byte(&ee_adc_fs_1,230);   // Para 1V
+  eeprom_update_byte(&ee_adc_fs_3,140);   // Para 3,3V
+  eeprom_update_byte(&ee_adc_fs_5,226);   // Para 5V
+  eeprom_update_byte(&ee_adc_fs_C,240);   // Para 12V
+  #endif
   eeprom_update_byte(&ee_rangoActual,33); // Actual 3,3 V
   eeprom_update_word(&ee_band,band);
   #ifdef SIN_CRISTAL
