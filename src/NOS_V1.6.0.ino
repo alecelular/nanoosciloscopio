@@ -719,6 +719,7 @@ byte rangoActual=RANGO_CAL5;
 unsigned int band=0;
 
 // Para leer el pulsador
+volatile bool pido=false;
 volatile bool aborta=false;
 bool capan=false;           // Captura de pantalla
 
@@ -1112,6 +1113,7 @@ ISR(TIMER1_COMPA_vect)
  }
 
  // MODO GENERADOR
+ pido=false;
  if(--contadorFrecuencia==0)
  {
   #if defined(__AVR_ATtiny85__)
@@ -1535,6 +1537,22 @@ void actualizar(int comienzo, unsigned long int hz_x10, unsigned int ms)
 // Se necesitan 10 ms para estabilizar el comparador.
 byte leerPulsador(void)
 {
+ // Pido leer pulsadores cuando haya atendido una interrupción
+ // cuando es generador porque va a cambiar el port B.
+ // En modo osciloscopio, el pulsador es leído cuando termina
+ // de medir o aborta.
+ // No puedo usar a fincaptura(), ya que el port B espera estar
+ // alterado antes de ser llamado. Aquí, simplemente si está
+ // el modo generador, espero a pido para sincronizar con la
+ // interrupción, para hacer todo
+ if(modoActual==MODO_GENERADOR)
+ {
+  // Debo asegurarme que haya interrupciones
+  // para que funcione pido.
+  pido=true;
+  while(pido);   // Espero a que atienda la interrupción
+ }
+
  byte resultado=0;
 
  // Si no se pone cristal, se ponen los pulsadores 2 y 3
