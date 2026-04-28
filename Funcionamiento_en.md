@@ -64,8 +64,8 @@ The number of buttons is set via `#define PULSADORES` (1, 2, or 3).
 ## 🔍 Oscilloscope Mode
 
 Samples the input signal on every **Timer 1** interrupt.
-* **Time Scales:** From **1 (10 µs)** to **816 (8160 µs)** per point.
-* **16 MHz Boost:** Scale 1 drops to **5 µs** (ATtiny85) or **6 µs** (ATmega328P).
+* **Time Scales:** From **1 (15 µs)** to **816 (8160 µs)** per point.
+* **16 MHz Boost:** Scale 1 drops to **8 µs** (ATtiny85) or **8 µs** (ATmega328P).
 * **Voltage Reference:** Uses internal **2.56V** (ATtiny85) or **1.1V** (ATmega328P). Input dividers must ensure the signal does not exceed vref for safety.
 
 ### On-Screen Information
