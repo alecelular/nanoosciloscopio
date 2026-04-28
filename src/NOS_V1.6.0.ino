@@ -892,20 +892,21 @@ void configurarEscala(unsigned int m)
  unsigned int tiempoDeseado=(unsigned int)m*10;
 
  // Vale para cualquier procesador a 16 MHz
+ // Vale para cualquier procesador a 16 MHz
  #if F_CPU==16000000UL
 
  #if defined(__AVR_ATtiny85__)
  if(m==1)
  {
-  // En 16 MHz, 4 es el borde mínimo,  5 es seguro
-  tiempoDeseado=5;
+  // En 16 MHz, 4 es el borde mínimo,  5 es seguro, 8 estable
+  tiempoDeseado=8;
  }
  #else
  // Para los ATmega328P, un poco más lento
  if(m==1)
  {
-  // En 16 MHz, 5 es el borde mínimo, 6 es seguro
-  tiempoDeseado=6;
+  // En 16 MHz, 5 es el borde mínimo, 6 es seguro, 8 estable
+  tiempoDeseado=8;
  }
  #endif
 
@@ -915,15 +916,15 @@ void configurarEscala(unsigned int m)
  #if defined(__AVR_ATtiny85__)
  if(m==1)
  {
-  // En  8 MHz, 8 borde mínimo, 10 seguro,  12 estable
-  tiempoDeseado=10;
+  // En  8 MHz, 8 borde mínimo, 10 seguro,  15 estable
+  tiempoDeseado=15;
  }
  #else
  // Para los ATmega328P, un poco más lento
  if(m==1)
  {
-  // En 8 MHz, 9 borde mínimo, 10 seguro, 12 estable
-  tiempoDeseado=10;
+  // En 8 MHz, 9 borde mínimo, 10 seguro, 15 estable
+  tiempoDeseado=15;
  }
  #endif
 
