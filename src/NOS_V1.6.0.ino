@@ -1775,6 +1775,12 @@ byte menu(void)
   #if PULSADORES>1
   modGen=true;
   #endif
+  #if defined(__AVR_ATtiny85__)
+  TIMSK&=~(1<<OCIE1A);
+  #else
+  TIMSK1&=~(1<<OCIE1A);
+  #endif
+  modoActual=255;   // Para que no actue pido en el menú
  }
  else if(modoActual==MODO_CFG)
  {
@@ -1824,7 +1830,16 @@ byte menu(void)
   // Le resto la pulsación breve para que todo tarde igual
   delay(PRESION_PULSADOR-(i==1?PRESION_PULSADOR_BREVE:0));
  }
-
+ // Devuelvo interrupciones en el modo generador
+ if(modoActual==255)
+ {
+  modoActual=(byte)MODO_GENERADOR;
+  #if defined(__AVR_ATtiny85__)
+  TIMSK|=(1<<OCIE1A);
+  #else
+  TIMSK1|=(1<<OCIE1A);
+  #endif
+ }
  // Devolverá también la última opción [Volver]
  return inicio+i; 
 }
