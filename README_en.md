@@ -28,7 +28,7 @@ Compact digital oscilloscope based on ATtiny85, with OLED display, integrated si
 - Fast sampling using ADC.
 - On-screen visualization.
 - Integrated signal generator.
-- Time scale: 10 µs to 8160 µs per point.
+- Time scale: 8/15 µs to 8160 µs per point.
 - Measures signal amplitudes of 1V, 3.3V, 5V or 12V, depending on selection.
 - Can display signals from 1 Hz up to approximately 10 kHz.
 - Positive signals only.
