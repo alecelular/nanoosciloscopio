@@ -1180,6 +1180,7 @@ unsigned long int medirFrecuencia(void)
  TCCR2A=(1<<WGM21);
  TCCR2B=(1<<CS22) | (1<<CS21);
  OCR2A=VALOR_OCR;
+ OCR1C=VALOR_OCR;
  #endif
 
  CLEAR_FLAGS();
