@@ -18,7 +18,7 @@ Osciloscopio digital compacto basado en ATtiny85, con pantalla OLED, generador d
 
 - MCU: ATtiny85 (principal), adaptable a ATmega328P  
 - Display: OLED SSD1306 (128x64 / 128x32)  
-- Tiempo por punto: 8/10 µs a 8160 µs  
+- Tiempo por punto: 8/15 µs a 8160 µs  
 - Frecuencia máxima útil: ~10 kHz  
 - Resolución: 8 bits (ADC interno, efectiva menor)  
 - Rangos de entrada: 1V, 3,3V, 5V, 12V  
