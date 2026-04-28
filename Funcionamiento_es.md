@@ -78,8 +78,8 @@ Dependiendo de la configuración de hardware, los pasos de calibración varían:
 ## 🔍 Sección Osciloscopio
 
 El sistema realiza un muestreo de la señal por cada interrupción del **Temporizador 1**. 
-* **Escalas de tiempo:** Desde **1 (10 µs)** hasta **816 (8160 µs)** por punto, representados en los 128 píxeles de ancho.
-* **Resolución mejorada:** Si se utiliza un cristal de **16 MHz**, la escala mínima baja a **5 µs** (ATtiny85) o **6 µs** (ATmega328P).
+* **Escalas de tiempo:** Desde **1 (15 µs)** hasta **816 (8160 µs)** por punto, representados en los 128 píxeles de ancho.
+* **Resolución mejorada:** Si se utiliza un cristal de **16 MHz**, la escala mínima baja a **8 µs** (ATtiny85) u **8 µs** (ATmega328P).
 * **Referencia de tensión:** Se usa la referencia interna de **2,56V** (ATtiny85) o **1,1V** (ATmega328P). Por seguridad, el divisor resistivo debe ajustar la entrada para no superar los 2.3V.
 
 ### Información en Pantalla (Interface)
