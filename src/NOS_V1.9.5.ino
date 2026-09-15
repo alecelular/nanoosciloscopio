@@ -44,32 +44,6 @@
 // usar uno u otro, sin recompilar. Ignora el define.
 //#define SENSOR_DHT
 
-// V1.9.5 30/5/26 En el frecuencímetro con cristal de 20 MHz,
-// cambio levemente el ancho de las ventanas de medición, en
-// pos de precisión y arreglo la visualización de ese modo. Op-
-// timizo algunas cosas más y de paso cambio la manera en que
-// detecto el selector 4 para que use los huecos entre resis-
-// tencias y ponga que es un selector que no es válido. Más a-
-// delante podría usarse como otra opción.
-
-// V1.9.4 29/5/26 Corrijo el cálculo del porcentaje de VPP.
-
-// V1.9.3 28/5/26 Corrección de mensajes. Cambio como presentar
-// los valores de ajuste de toletancias de resistencias en el
-// selector.
-
-// V1.9.2 28/5/26 Unifico criterio en calibrarRangoGenerico()
-// y en calibrarSensor(), y por ello, se han optimizado las
-// rutinas. Hago que si la resistencia del selector no es lo
-// esperado, dentro de su tolerancia, no se apruebe ese valor.
-// Cambios menores. A probar.
-
-// V1.9.1 27/5/26 Arreglo calibraciones. Estaban mal. Y adapto
-// el display de 128x32 porque ahora no gira. Y debí modificar
-// el valor de la resistencia del pulsador 2 a 2,2 KΩ. Unifico
-// criterio en calibrarRangoGenerico() y calibrarSensor(), y
-// por ello, se han optimizado las rutinas. A probar.
-
 // ATtiny85 
 // Compilar usando ATtinyCore 1.5.2 sin millis()
 // En preferencias: http://drazzy.com/package_drazzy.com_index.json
