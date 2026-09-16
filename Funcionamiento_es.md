@@ -91,7 +91,7 @@ derecha:
   respecto al fondo de escala. Se muestra "SAT" si la señal
   excede el fondo de escala (satura).
 - **Rango (X/Y/Z)**: rango de tensión de entrada seleccionado.
-- 
+
 ## Uso en modo generador
 
 Misma mecánica de navegación (mantener y soltar):
