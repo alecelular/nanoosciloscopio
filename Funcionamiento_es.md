@@ -70,6 +70,28 @@ Qué hace cada uno:
 
 Todas estas opciones (salvo Captura) quedan guardadas en la EEPROM apenas se eligen, así que se mantienen tras apagar y encender. La escala de tiempo en sí (a qué paso quedó "Sube/Baja") no se guarda: al reiniciar, vuelve a como haya quedado por defecto/autoescala.
 
+### Línea de estado (modo osciloscopio)
+
+En la parte inferior de la pantalla se muestra, de izquierda a
+derecha:
+
+- **Lupa (1/2/3)**: factor de aumento automático aplicado a la
+  onda cuando su amplitud es chica respecto al fondo de escala.
+- **A/M**: Autoescala o Manual.
+- **N/4**: Normal o Estirado (bandera "Estirar" del menú, x4).
+- **L / + / -**: modo de disparo. L = barrido libre continuo,
+  + = gatillo por flanco ascendente, - = gatillo por flanco
+  descendente.
+- **Tiempo (núm. + u)**: tiempo real por división en
+  microsegundos.
+- **Frecuencia (núm. + H)**: frecuencia detectada, con un
+  decimal. Se muestra "-----" si es menor a 0,5 Hz o si no se
+  detectó un ciclo completo.
+- **Amplitud (núm. + %) o SAT**: porcentaje de la amplitud pico
+  respecto al fondo de escala. Se muestra "SAT" si la señal
+  excede el fondo de escala (satura).
+- **Rango (X/Y/Z)**: rango de tensión de entrada seleccionado.
+- 
 ## Uso en modo generador
 
 Misma mecánica de navegación (mantener y soltar):
