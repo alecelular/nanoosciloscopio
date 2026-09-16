@@ -50,14 +50,10 @@
 #endif
 
 // 1 es 1 µs, 4 son 4 µs. 0 = No tiene retardo
-#if defined(SIN_CRISTAL)
-#define RetardoI2C 0
-#else
 #if F_CPU>12000000UL && defined(__AVR_ATmega328P__)
 #define RetardoI2C 1
 #else
 #define RetardoI2C 0
-#endif
 #endif
 
 #if RetardoI2C!=0
