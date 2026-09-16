@@ -72,6 +72,28 @@ What each one does:
 
 All of these (except Captura) are saved to EEPROM as soon as they're chosen, so they persist across power cycles. The time scale itself (which "Sube/Baja" step it's on) is not saved: on restart it goes back to whatever the default/Autoescala leaves it at.
 
+### Status line (oscilloscope mode)
+
+The bottom of the screen shows, from left to right:
+
+- **Lupa (1/2/3)** ("magnification"): automatic magnification
+  factor applied to the waveform when its amplitude is small
+  relative to full scale.
+- **A/M**: Autoescala / Manual ("Auto-scale" / "Manual").
+- **N/4**: Normal / Estirado ("Normal" / "Stretched", the
+  "Estirar" menu flag, x4).
+- **L / + / -**: trigger mode. 'L' = Libre ("Free run"),
+  '+' = rising-edge trigger, '-' = falling-edge trigger.
+- **Time (number + u)**: actual time per division, in
+  microseconds.
+- **Frequency (number + H)**: detected frequency, one decimal
+  place. Shows "-----" if below 0.5 Hz or no full cycle was
+  detected.
+- **Amplitude (number + %) or SAT**: peak amplitude as a
+  percentage of full scale. Shows "SAT" if the signal exceeds
+  full scale (saturated).
+- **Range (X/Y/Z)**: selected input voltage range.
+
 ## Using generator mode
 
 Same hold-and-release navigation:
