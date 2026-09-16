@@ -79,8 +79,8 @@ derecha:
   onda cuando su amplitud es chica respecto al fondo de escala.
 - **A/M**: Autoescala o Manual.
 - **N/4**: Normal o Estirado (bandera "Estirar" del menú, x4).
-- **L / + / -**: modo de disparo. L = barrido libre continuo,
-  + = gatillo por flanco ascendente, - = gatillo por flanco
+- **L / + / -**: modo de disparo. 'L' = barrido libre continuo,
+  '+' = gatillo por flanco ascendente, '-' = gatillo por flanco
   descendente.
 - **Tiempo (núm. + u)**: tiempo real por división en
   microsegundos.
