@@ -42,7 +42,7 @@ Prototype with Arduino Nano and 128x32 display
 ## Specifications
 
 - **MCU:** ATtiny85 (main), adaptable to ATmega328P.
-- **Display:** OLED SSD1306 (128x64 / 128x32) via bit-banged I2C
+- **Display:** OLED SSD1306 (128x64 / 128x32) (//#define SH1106) / SH1106 (#define SH1106) via bit-banged I2C
   (no extern `Wire.h`, no extern graphics library).
 - **Time base:** adjustable, specifically calibrated for 8, 12, 16
   and 20 MHz crystals (with phase correction for the ones that
@@ -71,8 +71,8 @@ Prototype with Arduino Nano and 128x32 display
   is best for accurate time/frequency measurements; the device can
   also be built without one (internal RC oscillator, see below), at
   the cost of accuracy and manual calibration.
-- OLED SSD1306 (128x64 or 128x32, configurable via `#define`).
-- Own PCB design: **NOS43** — see [`hardware/`](hardware/) (source
+- OLED SSD1306/SH1106 (128x64 or 128x32, configurable via `#define`).
+- Own PCB design: **NOS43** (SSD1306) — see [`hardware/`](hardware/) (source
   in `nos43.xcf`).
 - 2 push-buttons.
 - Optional: TP4056-type charging module + 3.7 V lithium battery,
