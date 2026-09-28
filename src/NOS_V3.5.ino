@@ -36,8 +36,12 @@
 // Más de 4, usará una pantalla de 128x64. Usar normalmente 8
 // para 128x64 y 4 para 128x32. Los otros modos, se verán co-
 // rrectamente, ya que no ocupan más de 4 líneas.
-// Se usa una pantalla con controlador SSD1306
+// Se usa una pantalla con controlador SSD1306/SH1106
 #define OLED 8
+
+// Si se prefiere usar un SH1106, poner #define SH1106
+// No poner el #define si es SSD1306
+//#define SH1106
 
 // Establezco idioma. Si no está, se usa castellano IDIOMA_ES
 // IDIOMA_ES / IDIOMA_BR / IDIOMA_EN son los definidos.
