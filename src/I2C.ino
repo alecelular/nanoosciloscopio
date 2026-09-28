@@ -27,7 +27,7 @@
 // esto no choca con el I2C nativo y se puede usar independien-
 // temente de esta implementación.
 
-// Sección I2C para conectar la pantalla SSD1306
+// Sección I2C para conectar la pantalla SSD1306/SH1106
 
 #if defined(__AVR_ATtiny85__)
 
@@ -141,7 +141,6 @@ byte i2c_escribir(byte b)
 
 byte cursorX=0;
 byte cursorY=0;
-bool girada=false;
 byte tipografia=0;
 byte espaciado=1;
 
@@ -170,23 +169,65 @@ void pantalla_posicionar(byte x, byte pag)
  // es un salvavidas
  i2c_parar(); 
  #if OLED<=4
- if(!girada) pantalla_cmd(0xB0 | (pag+4));  // Por si invierto pantalla
- else pantalla_cmd(0xB0 | pag);
+ pantalla_cmd(0xB0 | (pag+4));
  #else
  pantalla_cmd(0xB0 | pag);
  #endif
+ #ifdef SH1106
+ // Desfase para centrar las 128 columnas físicas
+ byte x_sh = x + 2; 
+ pantalla_cmd(0x00 | (x_sh & 0x0F)); 
+ pantalla_cmd(0x10 | (x_sh >> 4));   
+ #else
  pantalla_cmd(0x00 | (x & 0x0F));
  pantalla_cmd(0x10 | (x >> 4));
+ #endif
 }
 
-const byte iniOled[] PROGMEM={0xAE,0xD5,0x80,0xA8,0x3F,0xD3,0x00,0x40,0x8D,0x14,
- 0x20,0x00,0xDA,
- #if OLED<=4
- 0x02,0xA1,0xC8,
+const byte iniOled[] PROGMEM={
+ 0xAE,          // Apagar pantalla
+ 0xD5, 0x50,    // Configurar oscilador
+ 0xA8, 0x3F,    // Multiplex ratio
+ 0xD3, 0x00,    // Desplazamiento a 0
+ 0x40,          // Línea de inicio RAM a 0
+ 
+ // Comando de energía propio (Bomba de carga)
+ #ifdef SH1106
+ 0xAD, 0x8B,    
  #else
- 0x12,0xA0,0xC0,
+ 0x8D,0x14,
  #endif
- 0x81,0x7F,0xD9,0xF1,0xDB,0x40,0xA4,0xA6,0xAF};
+ 
+ 0x20, 0x00,    // Direccionamiento por páginas
+ 0xDA,
+
+ #if OLED<=4
+ 0x02, 0xA1, 0xC8,
+ #else
+ 0x12, 0xA0, 0xC0,
+ #endif
+
+ 0x81, 0x7F,    // Contraste medio
+ 0xD9,
+
+ #ifdef SH1106
+ 0x22,    // Pre-carga óptima para SH1106
+ #else
+ 0xF1,
+ #endif
+
+ 0xDB,
+
+ #ifdef SH1106
+ 0x35,    // Nivel VCOMH
+ #else
+ 0x40,
+ #endif
+
+ 0xA4,          // Salida RAM normal
+ 0xA6,          // Pantalla normal
+ 0xAF           // Encender pantalla
+};
 
 void pantalla_comienzo()
 {
@@ -208,12 +249,28 @@ void pantalla_cursor(byte x, byte y)
 
 void pantalla_limpia()
 {
- i2c_inicio();                // Restaura las patas
+ i2c_inicio();                
  for(byte pag=0;pag<8;pag++)
  {
-  pantalla_posicionar(0,pag);
+  i2c_parar(); 
+  #if OLED<=4
+  pantalla_cmd(0xB0 | (pag+4));
+  #else
+  pantalla_cmd(0xB0 | pag);
+  #endif
+  pantalla_cmd(0x00); // Forzar columna baja 0
+  pantalla_cmd(0x10); // Forzar columna alta 0
   pantalla_comienzoDatos();
-  for(byte i=0;i<128;i++) i2c_escribir(0x00);
+
+  // EN SH1106 son 132 y en SSD1306, 128
+  #ifdef SH1106
+  for(byte i=0;i<132;i++)
+  #else
+  for(byte i=0;i<128;i++)
+  #endif
+  {
+   i2c_escribir(0x00);
+  }
   i2c_parar();
  }
  #if OLED<8
@@ -228,10 +285,19 @@ void pantalla_limpia()
 void pantalla_limpiaPagina(byte pag)
 {
  pantalla_cmd(0xB0 | pag);
- pantalla_cmd(0x00);
- pantalla_cmd(0x10);
+ pantalla_cmd(0x00); // Forzar columna baja 0
+ pantalla_cmd(0x10); // Forzar columna alta 0
  pantalla_comienzoDatos();
- for(byte i=0;i<128;i++) i2c_escribir(0);
+ 
+ // EN SH1106 son 132 y en SSD1306, 128
+ #ifdef SH1106
+ for(byte i=0;i<132;i++)
+ #else
+ for(byte i=0;i<128;i++)
+ #endif
+ {
+  i2c_escribir(0x00);
+ }
  i2c_parar();
 }
 
