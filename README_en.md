@@ -318,6 +318,7 @@ signals, lower it.
 ├── Fotos/
 │   ├── ATtiny85/              # Assembled NOS41/NOS43 prototype
 │   └── Arduino_NANO_128x32/   # Test prototype on Arduino Nano
+│   └── Arduino_PRO_Mini/      # Test prototype on Arduino PRO MINI
 ├── README.md
 ├── README_en.md
 ├── README_br.md
