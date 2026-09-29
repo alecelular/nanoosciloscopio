@@ -319,6 +319,7 @@ muito pequenos, convém diminuí-lo.
 ├── Fotos/
 │   ├── ATtiny85/              # Protótipo NOS41/NOS43 montado
 │   └── Arduino_NANO_128x32/   # Protótipo de testes sobre Arduino Nano
+│   └── Arduino_PRO_Mini/      # Protótipo de testes sobre Arduino_PRO_Mini
 ├── README.md
 ├── README_en.md
 ├── README_br.md
