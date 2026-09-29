@@ -320,7 +320,8 @@ chicas, conviene bajarlo.
 │   └── nos43.xcf         # Fuente gráfica (GIMP) relacionada al diseño
 ├── Fotos/
 │   ├── ATtiny85/              # Prototipo NOS41/NOS43 armado
-│   └── Arduino_NANO_128x32/   # Prototipo de pruebas sobre Arduino Nano
+│   └── Arduino_NANO_128x32/   # Prototipo de pruebas sobre Arduino NanoArduino_PRO_Mini
+│   └── Arduino_PRO_Mini/      # Prototipo de pruebas sobre Arduino_PRO_Mini
 ├── README.md
 ├── README_en.md
 ├── README_br.md
