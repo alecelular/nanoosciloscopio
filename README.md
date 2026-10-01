@@ -265,7 +265,7 @@ agregando, al final de ese bloque, una línea que le pase el flag de
 compilación equivalente:
 
 ```
-328.menu.clock.8MHz_external.build.extra_flags=-DCLOCK_SOURCE=0
+328.menu.clock.8MHz_internal.build.extra_flags=-DCLOCK_SOURCE=0
 ```
 
 > El nombre exacto de la clave (`328.menu.clock.<algo>`) puede
