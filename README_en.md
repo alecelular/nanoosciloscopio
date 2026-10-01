@@ -260,7 +260,7 @@ Find that board's "Internal 8 MHz" option block and add, at the
 end of that block, a line passing the equivalent build flag:
 
 ```
-328.menu.clock.8MHz_external.build.extra_flags=-DCLOCK_SOURCE=0
+328.menu.clock.8MHz_internal.build.extra_flags=-DCLOCK_SOURCE=0
 ```
 
 > The exact key name (`328.menu.clock.<something>`) may differ
