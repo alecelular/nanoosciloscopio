@@ -190,7 +190,7 @@ constexpr uint16_t generar_hash_16bits(const char* str,uint16_t hash=0x811C)
 // .arduino15/packages/MiniCore/hardware/avr/3.X.X/boards.txt
 // Buscar la opción Internal 8 MHz y añadir la línea al final
 // de ese bloque:
-// 328.menu.clock.8MHz_external.build.extra_flags=-DCLOCK_SOURCE=0
+// 328.menu.clock.8MHz_internal.build.extra_flags=-DCLOCK_SOURCE=0
 
 // El nativo de Arduino para ATmega328P no tiene opción de
 // fuente de señal, siempre asume cristal externo.
